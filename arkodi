@@ -4,10 +4,17 @@ platforms='rpi rpi-2'
 
 read -r -d '' usage << EOF
 Install Arch and Kodi on a SD Card
-Usage: $0 [PLATFORM] DRIVE
-Parameters:
-  PLATFORM  [[${platforms// /]|}] the device platform
-  DRIVE     the SD Card drive
+Usage:
+  $0 [OPTION [VALUE]]... DRIVE
+Options:
+  -c  copy system config
+  -n  hostname
+  -t  localtime, will be appended to /usr/share/zoneinfo
+  -l  locale, as is on /etc/locale.gen
+  -p  [[${platforms// /]|}] platform
+  -h  show this help and quit
+Example:
+  $0 -n HTPC -t America/Sao_Paulo -l pt_BR.UTF-8 -p rpi-2 /
 EOF
 
 filesystem='ArchLinuxARM-PLATFORM-latest.tar.gz'
@@ -80,6 +87,10 @@ Platform:   ${platform}
 Drive:      ${drive}
 EOF
 
+  [ -n "${name:-}" ]      && echo "Hostname:   ${name}"
+  [ -n "${localtime:-}" ] && echo "Localtime:  ${localtime}"
+  [ -n "${lang:-}" ]      && echo "Locale:     ${lang}"
+
   echo -e "\e[33mWARNING\e[m: This will destroy the content of ${drive}"
   if ! confirm 'Do you want to proceed'; then
     exit
@@ -130,10 +141,7 @@ proceed() {
 
 main() {
 
-  drive="${2:-$1}"
-  platform="${2:+$1}"
-
-  platform="${platform:-${platforms/ */}}"
+  drive="${1:-}"
   filesystem="${filesystem/PLATFORM/${platform}}"
 
   depends_check
@@ -149,11 +157,24 @@ main() {
   fi
 }
 
-if [ $# -lt 1 ]; then
-  echo "${usage}"
-else
-  main "$@"
-fi
+platform="${platforms/ */}"
+
+while getopts 'cn:t:l:p:h' opt; do
+  case "${opt}" in
+  c)
+    lang="$LANG"
+    localtime="$(readlink /etc/localtime)"
+    ;;
+  l) lang="$OPTARG" ;;
+  n) name="$OPTARG" ;;
+  p) platform="$OPTARG" ;;
+  t) localtime="/usr/share/zoneinfo/$OPTARG" ;;
+  *) echo "${usage}"; exit ;;
+  esac
+done
+
+shift $((OPTIND-1))
+main "$@"
 
 # vim: ts=2 sw=2 sts=2 expandtab smartindent smarttab
 
