@@ -1,16 +1,16 @@
 #!/usr/bin/env bash
 
-targets='rpi rpi-2'
+platforms='rpi rpi-2'
 
 read -r -d '' usage << EOF
 Install Arch and Kodi on a SD Card
-Usage: $0 [TARGET] DRIVE
+Usage: $0 [PLATFORM] DRIVE
 Parameters:
-  TARGET  [[${targets// /]|}] the target device
-  DRIVE   the SD Card drive
+  PLATFORM  [[${platforms// /]|}] the device platform
+  DRIVE     the SD Card drive
 EOF
 
-filesystem='ArchLinuxARM-TARGET-latest.tar.gz'
+filesystem='ArchLinuxARM-PLATFORM-latest.tar.gz'
 url='http://archlinuxarm.org/os/'
 
 depends='bsdtar fdisk lsblk md5sum mkfs.ext4 mkfs.vfat sudo udevadm wget'
@@ -76,7 +76,7 @@ resume_check() {
 
   cat <<-EOF
 Filesystem: ${filesystem}
-Target:     ${target}
+Platform:   ${platform}
 Drive:      ${drive}
 EOF
 
@@ -131,10 +131,10 @@ proceed() {
 main() {
 
   drive="${2:-$1}"
-  target="${2:+$1}"
+  platform="${2:+$1}"
 
-  target="${target:-${targets/ */}}"
-  filesystem="${filesystem/TARGET/${target}}"
+  platform="${platform:-${platforms/ */}}"
+  filesystem="${filesystem/PLATFORM/${platform}}"
 
   depends_check
   drive_check
