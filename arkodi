@@ -122,7 +122,10 @@ config_prepare() {
 
   [ -n "${name:-}" ]      && echo "${name}" > config/etc/hostname
   [ -n "${localtime:-}" ] && ln -s "${localtime}" config/etc/localtime
-  [ -n "${lang:-}" ]      && echo "${lang}" > config/etc/locale.gen
+  if [ -n "${lang:-}" ]; then
+    echo "${lang}" > config/etc/locale.gen
+    echo "LANG=${lang}" > config/etc/locale.conf
+  fi
 
   ln -s /usr/lib/systemd/system/systemd-networkd-wait-online.service \
     config/etc/systemd/system/network-online.target.wants/
