@@ -112,6 +112,25 @@ download_check() {
   done
 }
 
+config_prepare() {
+
+  rm -rf config
+  mkdir -p config/etc/systemd/system/multi-user.target.wants/
+  mkdir -p config/etc/systemd/system/network-online.target.wants/
+
+  cp *.{service,timer} config/etc/systemd/system/
+
+  [ -n "${name:-}" ]      && echo "${name}" > config/etc/hostname
+  [ -n "${localtime:-}" ] && ln -s "${localtime}" config/etc/localtime
+  [ -n "${lang:-}" ]      && echo "${lang}" > config/etc/locale.gen
+
+  ln -s /usr/lib/systemd/system/systemd-networkd-wait-online.service \
+    config/etc/systemd/system/network-online.target.wants/
+
+  ln -s /etc/systemd/system/first-run.service \
+    config/etc/systemd/system/multi-user.target.wants/
+}
+
 proceed() {
 
   local script="o\np\nn\np\n1\n\n+100M\nt\nc\nn\np\n2\n\n\nw"
@@ -127,13 +146,14 @@ proceed() {
   mount "${partition}" boot
 
   local partition=$(ls ${drive}?* | sort | tail -n 1)
-  mkfs.ext4 ${partition}
+  mkfs.ext4 -F ${partition}
   mount "${partition}" root
 
-  bsdtar -xpf ${filesystem} -C root
+  bsdtar -xpf "${filesystem}" -C root
   sync
 
-  mv root/boot/* boot
+  cp -r config/* root/
+  mv root/boot/* boot/
   umount boot root
 
   rm --recursive --force boot root
@@ -144,10 +164,12 @@ main() {
   drive="${1:-}"
   filesystem="${filesystem/PLATFORM/${platform}}"
 
-  depends_check
   drive_check
-  resume_check
+  depends_check
   download_check
+  resume_check
+
+  config_prepare
 
   if [ "$(whoami)" = "root" ]; then
     proceed "${filesystem}" "${drive}"
