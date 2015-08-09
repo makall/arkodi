@@ -8,7 +8,6 @@
  RemainAfterExit=yes
  StandardError=journal+console
  StandardOutput=journal+console
- ExecStart=/usr/bin/locale-gen
  ExecStart=/usr/bin/pacman --sync --sysupgrade --refresh --noconfirm
  ExecStart=/usr/bin/pacman --sync --noconfirm afpfs-ng lirc polkit udisks upower unrar lsb-release python
  ExecStart=/usr/bin/pacman --sync --noconfirm lsb-release kodi-rbp omxplayer-git xorg-xrefresh xorg-xset
