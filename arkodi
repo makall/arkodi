@@ -104,21 +104,6 @@ download_check() {
   done
 }
 
-config_prepare() {
-
-  rm -rf config
-  mkdir -p config/etc/systemd/system/multi-user.target.wants/
-  mkdir -p config/etc/systemd/system/network-online.target.wants/
-
-  cp *.{service,timer} config/etc/systemd/system/
-
-  ln -s /usr/lib/systemd/system/systemd-networkd-wait-online.service \
-    config/etc/systemd/system/network-online.target.wants/
-
-  ln -s /etc/systemd/system/first-run.service \
-    config/etc/systemd/system/multi-user.target.wants/
-}
-
 proceed() {
 
   local script="o\np\nn\np\n1\n\n+100M\nt\nc\nn\np\n2\n\n\nw"
@@ -140,7 +125,15 @@ proceed() {
   bsdtar -xpf "${filesystem}" -C root
   sync
 
-  cp -r config/* root/
+  mkdir -p root/etc/systemd/system/network-online.target.wants/
+  cp first-run.service root/etc/systemd/system/
+
+  ln -s /usr/lib/systemd/system/systemd-networkd-wait-online.service \
+    root/etc/systemd/system/network-online.target.wants/
+
+  ln -s /etc/systemd/system/first-run.service \
+    root/etc/systemd/system/multi-user.target.wants/
+
   mv root/boot/* boot/
   umount boot root
 
@@ -156,8 +149,6 @@ main() {
   depends_check
   download_check
   resume_check
-
-  config_prepare
 
   if [ "$(whoami)" = "root" ]; then
     proceed "${filesystem}" "${drive}"
