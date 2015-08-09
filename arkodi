@@ -16,7 +16,7 @@ EOF
 filesystem='ArchLinuxARM-PLATFORM-latest.tar.gz'
 url='http://archlinuxarm.org/os/'
 
-depends='bsdtar fdisk lsblk md5sum mkfs.ext4 mkfs.vfat sudo udevadm wget'
+depends='bsdtar curl fdisk lsblk md5sum mkfs.ext4 mkfs.vfat sudo udevadm'
 
 set -o errexit
 set -o nounset
@@ -90,17 +90,18 @@ EOF
 }
 
 download_check() {
-  wget --continue ${url}${filesystem}.md5
   while true; do
+    curl --remote-name --location ${url}${filesystem}.md5
     if md5sum --status --check ${filesystem}.md5; then
       break
     fi
     if [ -f ${filesystem} ]; then
-      if ! confirm 'Do you want to re-download'; then
+      if ! confirm "${filesystem} MD5 does not match, re-download it"
+      then
         exit
       fi
     fi
-    wget --continue ${url}${filesystem}
+    curl --remote-name --location ${url}${filesystem}
   done
 }
 
