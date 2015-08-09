@@ -12,7 +12,6 @@
  ExecStart=/usr/bin/pacman --sync --noconfirm afpfs-ng lirc polkit udisks upower unrar lsb-release python
  ExecStart=/usr/bin/pacman --sync --noconfirm lsb-release kodi-rbp omxplayer-git xorg-xrefresh xorg-xset
  ExecStart=/usr/bin/ln -s /usr/lib/systemd/system/kodi.service /etc/systemd/system/multi-user.target.wants/
- ExecStart=/usr/bin/ln -s /usr/lib/systemd/system/autoupdate.timer /etc/systemd/system/multi-user.target.wants/
  ExecStart=/usr/bin/rm /etc/systemd/system/multi-user.target.wants/first-run.service
  ExecStart=/usr/bin/reboot
 
