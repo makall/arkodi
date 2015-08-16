@@ -1,0 +1,4 @@
+
+echo 'SUBSYSTEM=="tty", KERNEL=="tty0", GROUP="tty", MODE="0666"' \
+	>> /etc/udev/rules.d/raspberrypi.rules
+

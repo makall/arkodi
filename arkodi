@@ -126,23 +126,13 @@ proceed() {
   bsdtar -xpf "${filesystem}" -C root
   sync
 
+  cp --recursive firstrun root/etc/
+
   mkdir -p root/etc/systemd/system/network-online.target.wants/
-  cp first-run.service root/etc/systemd/system/
+  cp firstrun.service root/etc/systemd/system/
 
-  ln -s /usr/lib/systemd/system/systemd-networkd-wait-online.service \
-    root/etc/systemd/system/network-online.target.wants/
-
-  ln -s /etc/systemd/system/first-run.service \
+  ln -s /etc/systemd/system/firstrun.service \
     root/etc/systemd/system/multi-user.target.wants/
-
-  echo 'SUBSYSTEM=="tty", KERNEL=="tty0", GROUP="tty", MODE="0666"' \
-    >> root/etc/udev/rules.d/raspberrypi.rules
-
-  cat << EOF >> root/boot/config.txt
-gpu_mem_256=112
-gpu_mem_512=160
-gpu_mem_1024=256
-EOF
 
   mv root/boot/* boot/
   umount boot root

@@ -1,0 +1,4 @@
+
+systemctl disable firstrun.service
+reboot
+

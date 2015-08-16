@@ -1,0 +1,5 @@
+
+while ! curl --silent http://www.google.com > /dev/null; do
+	sleep 1
+done
+

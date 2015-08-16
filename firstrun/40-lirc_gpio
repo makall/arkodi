@@ -1,0 +1,40 @@
+
+cat << EOF > /etc/lirc/lircd.conf.d/lircd.conf
+begin remote
+
+  name  devinput
+  bits           16
+  flags SPACE_ENC|CONST_LENGTH
+  eps            30
+  aeps          100
+
+  header       4460  4520
+  one           516  1720
+  zero          516   604
+  ptrail        519
+  pre_data_bits   16
+  pre_data       0xE0E0
+  gap          108043
+  toggle_bit_mask 0x0
+
+      begin codes
+          KEY_RIGHT                0x46B9
+          KEY_LEFT                 0xA659
+          KEY_DOWN                 0x8679
+          KEY_UP                   0x06F9
+          KEY_OK                   0x16E9
+          KEY_EXIT                 0xB44B
+          KEY_MENU                 0xC43B
+      end codes
+
+end remote
+EOF
+
+
+cd /var/lib/kodi/.kodi/userdata/
+curl -O https://raw.githubusercontent.com/xbmc/xbmc/master/system/Lircmap.xml
+cd -
+
+echo 'dtoverlay=lirc-rpi' >> /boot/config.txt
+
+systemctl enable lircd.service
