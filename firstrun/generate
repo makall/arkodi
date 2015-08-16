@@ -1,0 +1,76 @@
+#!/usr/bin/env bash
+
+base_dir=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
+. "${base_dir}/../utils.sh"
+
+platforms="$(platform_list)"
+
+read -r -d '' usage << EOF
+Create configuration file for first run or
+append new configurations on existent file.
+Usage:
+  $0 [OPTION [VALUE]]... [FILENAME]
+Options:
+  -p  [[${platforms// /]|}] platform
+  -h  show this help and quit
+Example:
+  $0 -p rpi-2 my.cfg
+EOF
+
+append() {
+  if [ -n "${config}" ]; then
+    echo "$@" >> "${config}"
+  else
+    echo "$@"
+  fi
+}
+
+proceed() {
+  for i in $@; do
+    if [ ! -f "${i}" ]; then
+      continue
+    fi
+    if grep --silent "${i}" "${temporary}"; then
+      continue
+    fi
+    if [ "${i%%/*}" = "optional" ]; then
+      append "# ${i}"
+    else
+      append "${i}"
+    fi
+  done
+}
+
+main() {
+
+  config="${1:+$(realpath $1)}"
+  temporary="$(mktemp)"
+
+  if [ -f "${config}" ]; then
+    sed 's/(\W*#.*|\W*$)//' "${config}" > "${temporary}"
+  fi
+
+  cd "${base_dir}"
+
+  proceed base/*
+  proceed recommended/*
+  proceed *${platform}{_*,}/*
+  proceed optional/*
+
+  rm "${temporary}"
+}
+
+platform="${platforms/ */}"
+
+while getopts 'c:p:h' opt; do
+  case "${opt}" in
+    p) platform="$OPTARG" ;;
+    *) echo "${usage}"; exit ;;
+  esac
+done
+
+shift $((OPTIND-1))
+main "$@"
+
+# vim: ts=2 sw=2 sts=2 expandtab smartindent smarttab
+

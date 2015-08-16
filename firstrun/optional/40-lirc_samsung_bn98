@@ -30,11 +30,3 @@ begin remote
 end remote
 EOF
 
-
-cd /var/lib/kodi/.kodi/userdata/
-curl -O https://raw.githubusercontent.com/xbmc/xbmc/master/system/Lircmap.xml
-cd -
-
-echo 'dtoverlay=lirc-rpi' >> /boot/config.txt
-
-systemctl enable lircd.service

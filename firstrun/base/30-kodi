@@ -2,17 +2,13 @@
 pacman --sync --sysupgrade --refresh --noconfirm
 pacman --sync --noconfirm \
 	afpfs-ng \
-	lirc \
 	polkit \
 	udisks \
 	upower \
 	unrar \
 	python \
 	lsb-release \
-	kodi-rbp \
-	omxplayer-git \
-	xorg-xrefresh \
-	xorg-xset
+	kodi-rbp
 
 systemctl enable kodi.service
 

@@ -1,0 +1,9 @@
+
+pacman --sync --noconfirm lirc
+
+cd /var/lib/kodi/.kodi/userdata/
+curl -O https://raw.githubusercontent.com/xbmc/xbmc/master/system/Lircmap.xml
+cd -
+
+systemctl enable lircd.service
+

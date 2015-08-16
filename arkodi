@@ -1,12 +1,14 @@
 #!/usr/bin/env bash
 
-platforms='rpi rpi-2'
+. ./utils.sh
+platforms="$(platform_list)"
 
 read -r -d '' usage << EOF
 Install Arch and Kodi on a SD Card
 Usage:
   $0 [OPTION [VALUE]]... DRIVE
 Options:
+  -c  [filename] use config file
   -p  [[${platforms// /]|}] platform
   -h  show this help and quit
 Example:
@@ -76,11 +78,13 @@ confirm() {
 }
 
 resume_check() {
-
+  local firstrun="$(firstrun_config ${config} | sed 's/^/  /')"
   cat <<-EOF
 Filesystem: ${filesystem}
 Platform:   ${platform}
 Drive:      ${drive}
+First run:
+${firstrun}
 EOF
 
   echo -e "\e[33mWARNING\e[m: This will destroy the content of ${drive}"
@@ -109,7 +113,8 @@ proceed() {
 
   local script="o\np\nn\np\n1\n\n+100M\nt\nc\nn\np\n2\n\n\nw"
   local filesystem="$1"
-  local drive="$2"
+  local firstrun="$2"
+  local drive="$3"
 
   echo -e ${script} | fdisk ${drive}
 
@@ -126,11 +131,12 @@ proceed() {
   bsdtar -xpf "${filesystem}" -C root
   sync
 
-  cp --recursive firstrun root/etc/
+  mkdir -p root/etc/firstrun
+  cp ${firstrun}/* root/etc/firstrun
+
+  cp firstrun/firstrun.service root/etc/systemd/system/
 
   mkdir -p root/etc/systemd/system/network-online.target.wants/
-  cp firstrun.service root/etc/systemd/system/
-
   ln -s /etc/systemd/system/firstrun.service \
     root/etc/systemd/system/multi-user.target.wants/
 
@@ -150,18 +156,27 @@ main() {
   download_check
   resume_check
 
+  local firstrun="$(mktemp --directory)"
+  while read line; do
+    local item="firstrun/${line}"
+    [ -f "${item}" ] && cp "${item}" ${firstrun}
+  done < <(firstrun_config ${config:-})
+
   if [ "$(whoami)" = "root" ]; then
-    proceed "${filesystem}" "${drive}"
+    proceed ${filesystem} ${firstrun} ${drive}
   else
     sudo --reset-timestamp bash -c "$(declare -f proceed);
-    proceed ${filesystem} ${drive}"
+    proceed ${filesystem} ${firstrun} ${drive}"
   fi
+
+  rm --recursive --force "${firstrun}"
 }
 
 platform="${platforms/ */}"
 
-while getopts 'cn:t:l:p:h' opt; do
+while getopts 'c:p:h' opt; do
   case "${opt}" in
+  c) config="$OPTARG" ;;
   p) platform="$OPTARG" ;;
   *) echo "${usage}"; exit ;;
   esac

@@ -1,7 +1,5 @@
 
 cat << EOF >> /boot/config.txt
-gpu_mem_256=112
-gpu_mem_512=160
 gpu_mem_1024=256
 EOF
 

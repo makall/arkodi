@@ -1,0 +1,3 @@
+
+echo 'dtoverlay=lirc-rpi' >> /boot/config.txt
+
