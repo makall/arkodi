@@ -62,7 +62,7 @@ main() {
 
 platform="${platforms/ */}"
 
-while getopts 'c:p:h' opt; do
+while getopts 'p:h' opt; do
   case "${opt}" in
     p) platform="$OPTARG" ;;
     *) echo "${usage}"; exit ;;
