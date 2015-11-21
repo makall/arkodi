@@ -30,3 +30,7 @@ begin remote
 end remote
 EOF
 
+cat << EOF > /var/lib/kodi/.kodi/userdata/keymaps/remote.xml
+<keymap><global><remote><menu>ContextMenu</menu></remote></global></keymap>
+EOF
+
