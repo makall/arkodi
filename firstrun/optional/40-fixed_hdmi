@@ -1,0 +1,11 @@
+
+cat << EOF >> /boot/config.txt
+
+hdmi_ignore_cec_init=1
+hdmi_force_hotplug=1
+hdmi_edid_file=1
+
+EOF
+
+/opt/vc/bin/tvservice -d /boot/edid.dat
+
