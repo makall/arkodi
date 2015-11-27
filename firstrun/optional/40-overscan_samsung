@@ -1,0 +1,11 @@
+
+cat << EOF >> /boot/config.txt
+
+overscan_scale=1
+overscan_left=8
+overscan_right=10
+overscan_top=-23
+overscan_bottom=-22
+
+EOF
+
