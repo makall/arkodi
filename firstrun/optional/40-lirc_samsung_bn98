@@ -30,7 +30,11 @@ begin remote
 end remote
 EOF
 
+mkdir -p /var/lib/kodi/.kodi/userdata/keymaps
+
 cat << EOF > /var/lib/kodi/.kodi/userdata/keymaps/remote.xml
 <keymap><global><remote><menu>ContextMenu</menu></remote></global></keymap>
 EOF
+
+# vim: filetype=sh ts=2 sw=2 sts=2 expandtab smartindent smarttab
 
