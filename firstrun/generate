@@ -18,11 +18,11 @@ Example:
 EOF
 
 append() {
-  if [ -n "${config}" ]; then
-    echo "$@" >> "${config}"
-  else
-    echo "$@"
-  fi
+  while read -r line || [[ -n "$line" ]]; do
+    [[ $line != \#* ]] && break
+    echo "#$line" >> $config
+  done < "$1"
+  echo "$2$1" >> $config
 }
 
 proceed() {
@@ -34,7 +34,7 @@ proceed() {
       continue
     fi
     if [ "${i%%/*}" = "optional" ]; then
-      append "# ${i}"
+      append "${i}" "# "
     else
       append "${i}"
     fi
@@ -48,6 +48,8 @@ main() {
 
   if [ -f "${config}" ]; then
     sed 's/(\W*#.*|\W*$)//' "${config}" > "${temporary}"
+  else
+    config="/dev/stdout"
   fi
 
   cd "${base_dir}"

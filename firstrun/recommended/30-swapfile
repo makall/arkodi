@@ -1,0 +1,10 @@
+# Usage: recomented/30-swapfile 1GiB
+
+fallocate -l $1 /swapfile
+chmod 600 /swapfile
+mkswap /swapfile
+swapon /swapfile
+echo "/swapfile none swap defaults 0 0" >> /etc/fstab
+
+# vim: filetype=sh ts=2 sw=2 sts=2 expandtab smartindent smarttab
+

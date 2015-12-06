@@ -1,0 +1,13 @@
+# Usage: recommended/30-static-ip eth0 192.168.0.101/24 192.168.0.1
+
+cat << EOF > /etc/systemd/network/$1.network
+[Match]
+Name=$1
+
+[Network]
+Address=$2
+Gateway=$3
+EOF
+
+# vim: filetype=sh ts=2 sw=2 sts=2 expandtab smartindent smarttab
+
