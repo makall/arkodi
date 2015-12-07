@@ -1,0 +1,7 @@
+
+sed -i 's/defaults/defaults,noatime/' /etc/fstab
+echo '/dev/mmcblk0p2 / f2fs defaults,noatime,discard 0 0' >> /etc/fstab
+
+
+# vim: filetype=sh ts=2 sw=2 sts=2 expandtab smartindent smarttab
+
