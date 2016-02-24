@@ -1,4 +1,4 @@
-# Usage: recomented/30-swapfile 1GiB
+# Usage: optional/30-swapfile 1GiB
 
 fallocate -l $1 /swapfile
 chmod 600 /swapfile

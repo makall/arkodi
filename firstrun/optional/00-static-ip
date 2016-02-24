@@ -1,4 +1,4 @@
-# Usage: recommended/30-static-ip eth0 192.168.0.101/24 192.168.0.1
+# Usage: optional/30-static-ip eth0 192.168.0.101/24 192.168.0.1
 
 cat << EOF > /etc/systemd/network/$1.network
 [Match]

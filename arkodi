@@ -125,7 +125,7 @@ prepare_firstrun() {
     local output="$firstrun/$(basename $item)"
     if [ -f "$item" ]; then
       local args="${line#${item#firstrun/} }"
-      if [ -n "$args" ]; then
+      if [ "$args" != "$line" ]; then
         echo -e "function ArkodiFirstRun() {\n" > $output
         cat "$item" >> $output
         echo -e "}\nArkodiFirstRun $args" >> $output

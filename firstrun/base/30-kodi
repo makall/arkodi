@@ -1,6 +1,5 @@
 
-pacman --sync --sysupgrade --refresh --noconfirm
-pacman --sync --noconfirm \
+pacman --sync --needed --noconfirm \
 	afpfs-ng \
 	polkit \
 	udisks \

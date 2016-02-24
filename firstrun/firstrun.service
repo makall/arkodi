@@ -4,7 +4,7 @@
 [Service]
  StandardError=journal+console
  StandardOutput=journal+console
- ExecStart=/usr/bin/bash -c 'for i in /etc/firstrun/*; do bash -c $i; done'
+ ExecStart=/usr/bin/bash -c 'for i in $(ls -v /etc/firstrun/*); do bash -c $i; done'
 
 [Install]
  WantedBy=multi-user.target
