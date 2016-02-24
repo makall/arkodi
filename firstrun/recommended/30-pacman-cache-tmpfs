@@ -1,5 +1,0 @@
-
-echo "tmpfs /var/cache/pacman/pkg tmpfs nosuid 0 0" >> /etc/fstab
-
-# vim: filetype=sh ts=2 sw=2 sts=2 expandtab smartindent smarttab
-
