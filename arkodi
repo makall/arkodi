@@ -44,7 +44,10 @@ drive_check() {
     fi
   done
 
-  error "${drive} is not a SD Card drive."
+  echo -e "\e[33mWARNING\e[m: ${drive} is not a SD Card drive."
+  if ! confirm 'Do you want to proceed'; then
+    exit
+  fi
 }
 
 resume_check() {
