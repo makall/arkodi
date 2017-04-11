@@ -1,0 +1,27 @@
+
+ans=$([[ $(df -T | grep /dev/root) == *"btrfs"* ]] && echo b || echo y)
+
+pacman --sync --needed --noconfirm base-devel git rsync mkinitcpio
+
+cd /tmp
+
+curl -O https://aur.archlinux.org/cgit/aur.git/snapshot/liveroot.tar.gz
+tar xvf liveroot.tar.gz
+
+chgrp nobody liveroot
+chmod g+ws liveroot
+setfacl -m u::rwx,g::rwx liveroot
+setfacl -d --set u::rwx,g::rwx,o::- liveroot
+
+cd liveroot
+echo $ans | sudo -u nobody makepkg
+pacman --upgrade liveroot-21-1-any.pkg.tar.xz
+
+sed -i 's/^\(MODULES="\)/\1zram btrfs ext2 /' /etc/mkinitcpio.conf
+sed -i 's/^\(HOOKS.*udev\)/\1 oroot/' /etc/mkinitcpio.conf
+sed -i 's/^\(root=.*\)$/\1 oroot=live/' /boot/cmdline.txt
+
+mkinitcpio -k $(uname -r) -g /boot/initrd
+
+# vim: filetype=sh ts=2 sw=2 sts=2 expandtab smartindent smarttab
+
