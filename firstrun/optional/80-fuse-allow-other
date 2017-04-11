@@ -1,0 +1,2 @@
+
+sed -i 's/^#\(user_allow_other\)/\1/' /etc/fuse.conf
