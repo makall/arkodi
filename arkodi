@@ -91,15 +91,15 @@ proceed() {
 
   echo -e ${script} | fdisk ${drive}
 
-  mkdir -p boot root
+  mkdir --parents boot root
 
-  local partition=$(ls ${drive}?* | sort | head -n 1)
-  mkfs.vfat "${partition}"
-  mount "${partition}" boot
+  local boot_partition=$(ls ${drive}?* | sort | head -n 1)
+  mkfs.vfat "${boot_partition}"
+  mount "${boot_partition}" boot
 
-  local partition=$(ls ${drive}?* | sort | tail -n 1)
-  mkfs.ext4 -F ${partition}
-  mount "${partition}" root
+  local root_partition=$(ls ${drive}?* | sort | tail -n 1)
+  mkfs.ext4 -F ${root_partition}
+  mount "${root_partition}" root
 
   bsdtar -xpf "${filesystem}" -C root
   sync
