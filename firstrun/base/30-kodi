@@ -2,11 +2,11 @@
 pacman --sync --needed --noconfirm \
 	afpfs-ng \
 	polkit \
-	udisks \
 	upower \
 	unrar \
 	python \
 	lsb-release \
+	libcec-rpi \
 	kodi-rbp
 
 systemctl enable kodi.service
